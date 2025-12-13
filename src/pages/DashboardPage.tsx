@@ -24,7 +24,7 @@ export default function DashboardPage() {
 
 
     return (
-        <div className="container mt-8 sm:mx-auto sm:w-5xl border border-black px-10 py-5">
+        <div className="container mt-8 mb-8 sm:mx-auto sm:w-5xl border border-black px-10 py-5">
             {isLoading && <p>Loading...</p>}
             {!isLoading &&
                 <>
