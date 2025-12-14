@@ -11,7 +11,6 @@ export interface UserData {
 export interface HierarchyUser extends UserData {
   fullName: string;
   initials: string;
-  reports: HierarchyUser[]; // This allows for recursive component rendering
-  isManager: boolean; // Calculated property to determine '+' or '-' sign
-  isExpanded: boolean; // State for toggling visibility
+  isManager: boolean;  
+  reports: HierarchyUser[]; 
 }

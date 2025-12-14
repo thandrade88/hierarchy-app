@@ -8,7 +8,6 @@ export default function buildHierarchyTree(users: UserData[], managerId?: number
             fullName: `${user.firstName} ${user.lastName}`,
             initials: `${user.firstName[0]}${user.lastName[0]}`,
             isManager: users.some(u => u.managerId === user.id),
-            isExpanded: false,
             reports: buildHierarchyTree(users, user.id)
         }));
 }
