@@ -33,8 +33,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const secret = encode(email, password);   
       const foundUser = await getUserBySecret(secret);
 
-      console.log('aqui', foundUser);
-
       if (foundUser) {
         setUser(foundUser);
         localStorage.setItem('user', JSON.stringify(foundUser));

@@ -1,42 +1,60 @@
-import { useState } from "react";
-import useAuth from "../hooks/useAuth";
+import { useLoginForm } from '../hooks/useLoginForm';
 
 export default function LoginForm() {
-    const [email, setEmail] = useState('anthony.xiouping@xtreet.tvl');
-    const [password, setPassword] = useState('mllv9n0x');
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+  const {
+    formData,
+    error,
+    isLoading,
+    handleChange,
+    handleSubmit,
+  } = useLoginForm();
 
-    const { login } = useAuth();
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <div 
+          role="alert" 
+          className="text-red-600 text-sm mb-2"
+        >
+          {error}
+        </div>
+      )}
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(null);
-        setIsLoading(true);
-        try {
-            await login(email, password);
-        } catch (err) {
-            setError('Invalid email or password. Please try again.');
-        }
-        setIsLoading(false);
-    };
+      <div className="flex items-center space-x-2">
+        <label htmlFor="email" className="w-20 text-sm">Email:</label>
+        <input
+          type="email"
+          id="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          className="px-2 py-1 border rounded"
+          disabled={isLoading}
+        />
+      </div>
 
-    return (
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-            <div className="flex flex-row justify-between">
-                <label htmlFor="email" className="text-gray-700">Email address:</label>
-                <input type="email" id="email" value={email} onChange={(event) => setEmail(event.target.value)} className="border border-gray-300 rounded px-3 py-2" />
-            </div>
+      <div className="flex items-center space-x-2">
+        <label htmlFor="password" className="w-20 text-sm">Password:</label>
+        <input
+          type="password"
+          id="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          className="px-2 py-1 border rounded"
+          disabled={isLoading}
+        />
+      </div>
 
-            <div className="flex flex-row justify-between">
-                <label htmlFor="password" className="text-gray-700">Password:</label>
-                <input type="password" id="password" value={password} onChange={(event) => setPassword(event.target.value)} className="border border-gray-300 rounded px-3 py-2" />
-            </div>
-
-            <button type="submit" disabled={isLoading} className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                {isLoading ? 'Logging in...' : 'Login'}
-            </button>
-            {error && <p className="text-red-500">{error}</p>}
-        </form>
-    );
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 disabled:opacity-50"
+        >
+          {isLoading ? 'Logging in...' : 'Login'}
+        </button>
+      </div>
+    </form>
+  );
 }
