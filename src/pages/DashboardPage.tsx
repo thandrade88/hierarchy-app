@@ -35,7 +35,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="mt-10">
                         <h1 className="text-4xl font-light">Hierarchy Tree</h1>
-                        <HierarchyTree {...hierarchyTree} />
+                        <HierarchyTree users={hierarchyTree} />
                     </div>
                 </>
             }

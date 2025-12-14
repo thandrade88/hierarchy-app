@@ -1,16 +1,14 @@
-import type { UserData } from "../types/user";
+import type { UserData, HierarchyUser } from "../types/user";
 
-export default function buildHierarchyTree(users: UserData[]) {
-    return users.filter(user => user.managerId === undefined).map((manager) => ({
-        ...manager,
-        fullName: `${manager.firstName} ${manager.lastName}`,
-        initials: `${manager.firstName[0]}${manager.lastName[0]}`,
-        isManager: true,
-        isExpanded: false,
-        reports: users.filter(user => user.managerId === manager.id).map((user) => ({
+export default function buildHierarchyTree(users: UserData[], managerId?: number): HierarchyUser[] {
+    return users
+        .filter(user => user.managerId === managerId)
+        .map(user => ({
             ...user,
             fullName: `${user.firstName} ${user.lastName}`,
-            initials: `${user.firstName[0]}${user.lastName[0]}`
-        })),
-    }));
+            initials: `${user.firstName[0]}${user.lastName[0]}`,
+            isManager: users.some(u => u.managerId === user.id),
+            isExpanded: false,
+            reports: buildHierarchyTree(users, user.id)
+        }));
 }
