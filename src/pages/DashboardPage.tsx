@@ -1,20 +1,20 @@
 import useAuth from "../hooks/useAuth";
 import { useEffect, useState } from "react";
-import type { UserData } from "../types/user";
+import type { HierarchyUser, UserData } from "../types/user";
 import { fetchAllUsers } from "../utils/api";
 import buildHierarchyTree from "../utils/hierarchy.ts";
 import HierarchyTree from "../components/HierarchyTree";
 
 export default function DashboardPage() {
     const [isLoading, setIsLoading] = useState(true);
-    const [hierarchyTree, setHierarchyTree] = useState<{ manager: UserData; reports: UserData[] }[]>([]);
+    const [hierarchyTree, setHierarchyTree] = useState<HierarchyUser[]>([]);
     const { user, logout } = useAuth();
 
     const showUsers = async () => {
         setIsLoading(true);
         const allUsers: UserData[] = await fetchAllUsers();
-        const tree = buildHierarchyTree(allUsers);
-        setHierarchyTree(tree as { manager: UserData; reports: UserData[] }[]);
+        const usersTree = buildHierarchyTree(allUsers);
+        setHierarchyTree(usersTree as HierarchyUser[]);
         setIsLoading(false);
     };
 
@@ -22,6 +22,7 @@ export default function DashboardPage() {
         showUsers();
     }, []);
 
+    console.log('hierarchyTree', hierarchyTree);
 
     return (
         <div className="container mt-8 mb-8 sm:mx-auto sm:w-5xl border border-black px-10 py-5">

@@ -1,18 +1,16 @@
 import type { UserData } from "../types/user";
 
 export default function buildHierarchyTree(users: UserData[]) {
-   const managers =  Object.values(users).filter(user => user.managerId === undefined);   
-   
-    const team = managers.map((manager: UserData) => {
-        return {
-            manager: {...manager},            
-            reports: Object.values(users).filter(user => user.managerId !== undefined && user.managerId === manager.id)
-        };
-    });
-
-
-    console.log(team);       
-
-    
-    return team;
+    return users.filter(user => user.managerId === undefined).map((manager) => ({
+        ...manager,
+        fullName: `${manager.firstName} ${manager.lastName}`,
+        initials: `${manager.firstName[0]}${manager.lastName[0]}`,
+        isManager: true,
+        isExpanded: false,
+        reports: users.filter(user => user.managerId === manager.id).map((user) => ({
+            ...user,
+            fullName: `${user.firstName} ${user.lastName}`,
+            initials: `${user.firstName[0]}${user.lastName[0]}`
+        })),
+    }));
 }

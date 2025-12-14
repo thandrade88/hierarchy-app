@@ -8,10 +8,10 @@ export interface UserData {
     secret?:string;
 }
 
-// Interface for the structured data used in the Hierarchy Tree component
 export interface HierarchyUser extends UserData {
   fullName: string;
+  initials: string;
   reports: HierarchyUser[]; // This allows for recursive component rendering
-  isManager: boolean;// Calculated property to determine '+' or '-' sign [cite: 76, 77]
+  isManager: boolean; // Calculated property to determine '+' or '-' sign
   isExpanded: boolean; // State for toggling visibility
 }
