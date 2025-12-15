@@ -11,12 +11,10 @@ export type AuthContextType = {
   isLoading: boolean;
 };
 
-export const AuthContext = createContext<AuthContextType>({
-  user: null,
-  login: async () => {},
-  logout: () => {},
-  isLoading: false
-});
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
+
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {  
   const initialUser = localStorage.getItem('user') 

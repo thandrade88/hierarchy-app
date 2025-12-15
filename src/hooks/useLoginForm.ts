@@ -21,7 +21,6 @@ export function useLoginForm() {
   }, []);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    console.log('to aqui');
     e.preventDefault();
     setError(null);
     
