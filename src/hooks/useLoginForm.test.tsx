@@ -5,12 +5,12 @@ import { useLoginForm } from './useLoginForm';
 const mockSubmitEvent = {
   preventDefault: vi.fn(),
   persist: vi.fn(),
-} as unknown as React.FormEvent<HTMLFormElement>;
+} as any as React.FormEvent<HTMLFormElement>;
 
 const mockChangeEvent = (id: string, value: string) => ({
   target: { id, value },
   persist: vi.fn(),
-} as unknown as React.ChangeEvent<HTMLInputElement>);
+} as any as React.ChangeEvent<HTMLInputElement>);
 
 const mockLogin = vi.fn();
 vi.mock('./useAuth', () => ({

@@ -69,19 +69,24 @@ describe('AuthProvider', () => {
 
     it('should initialize with null user if no user in localStorage', () => {
         renderAuthProvider();
+        
         expect(screen.getByTestId('user-email')).toHaveTextContent('null');        
     });
 
     it('should initialize with user from localStorage', () => {
         localStorage.setItem('user', JSON.stringify(MOCK_USER));
+        
         renderAuthProvider();
+        
         expect(screen.getByTestId('user-email')).toHaveTextContent(MOCK_USER.email);
     });
 
     it('should handle successful login: update state and localStorage', async () => {
         renderAuthProvider();
+        
         const loginButton = screen.getByRole('button', { name: 'Login' });
         await userEventSetup.click(loginButton);
+        
         expect(encode).toHaveBeenCalledWith(TEST_EMAIL, TEST_PASSWORD);
         expect(getUserBySecret).toHaveBeenCalledWith(TEST_SECRET);
         expect(screen.getByTestId('user-email')).toHaveTextContent(MOCK_USER.email);
@@ -91,9 +96,12 @@ describe('AuthProvider', () => {
 
     it('should handle login error (invalid credentials)', async () => {
         vi.mocked(getUserBySecret).mockResolvedValue(null);
+        
         renderAuthProvider();
+        
         const loginButton = screen.getByRole('button', { name: 'Login' });
         await userEventSetup.click(loginButton);
+        
         expect(screen.getByTestId('user-email')).toHaveTextContent('null');
         expect(screen.getByTestId('login-error')).toHaveTextContent('Invalid credentials');
         expect(localStorage.getItem('user')).toBeNull();        
@@ -102,18 +110,25 @@ describe('AuthProvider', () => {
     it('should handle API exception and display error', async () => {
         const apiError = new Error('Network failed');
         vi.mocked(getUserBySecret).mockRejectedValue(apiError);
+        
         renderAuthProvider();
+        
         const loginButton = screen.getByText('Login');
         await userEventSetup.click(loginButton);
+        
         expect(screen.getByTestId('login-error')).toHaveTextContent('Network failed');        
     });
 
     it('should handle logout: clear state and localStorage', async () => {
         localStorage.setItem('user', JSON.stringify(MOCK_USER));
+        
         renderAuthProvider();
+
         expect(screen.getByTestId('user-email')).toHaveTextContent(MOCK_USER.email);
+        
         const logoutButton = screen.getByText('Logout');
         await userEventSetup.click(logoutButton);
+        
         expect(screen.getByTestId('user-email')).toHaveTextContent('null');
         expect(localStorage.getItem('user')).toBeNull();
     });
