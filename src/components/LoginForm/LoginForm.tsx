@@ -1,4 +1,4 @@
-import { useLoginForm } from '../hooks/useLoginForm';
+import { useLoginForm } from '../../hooks/useLoginForm';
 
 export default function LoginForm() {
   const {
@@ -21,27 +21,31 @@ export default function LoginForm() {
       )}
 
       <div className="flex items-center space-x-2">
-        <label htmlFor="email" className="w-20 text-sm">Email:</label>
+        <div className="w-40">
+          <label htmlFor="email" className="text-lg">Email:</label>
+        </div>
         <input
           type="email"
           id="email"
           value={formData.email}
           onChange={handleChange}
           required
-          className="px-2 py-1 border rounded"
+          className="px-2 py-1 border rounded w-full"
           disabled={isLoading}
         />
       </div>
 
       <div className="flex items-center space-x-2">
-        <label htmlFor="password" className="w-20 text-sm">Password:</label>
+        <div className="w-40">
+          <label htmlFor="password" className="text-lg">Password:</label>
+        </div>
         <input
           type="password"
           id="password"
           value={formData.password}
           onChange={handleChange}
           required
-          className="px-2 py-1 border rounded"
+          className="px-2 py-1 border rounded w-full"
           disabled={isLoading}
         />
       </div>

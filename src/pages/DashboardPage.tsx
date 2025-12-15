@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import type { HierarchyUser } from "../types/user";
 import { fetchAllUsers } from "../utils/api";
 import buildHierarchyTree from "../utils/hierarchy";
-import HierarchyTree from "../components/HierarchyTree";
+import HierarchyTree from "../components/HierarchyTree/HierarchyTree";
 import { useAuth } from "../hooks/useAuth";
 
 export default function DashboardPage() {
@@ -89,13 +89,13 @@ export default function DashboardPage() {
                 <>
                     <div className="flex justify-end">
                         <p className="text-lg mr-2">{user?.firstName} {user?.lastName}</p>
-                        <a
+                        (<a
                             href="#"
                             className="text-blue-500 underline"
                             onClick={handleLogout}
                         >
                             Logout
-                        </a>
+                        </a>)
                     </div>
                     <div className="mt-10">
                         <h1 className="text-4xl font-light">Hierarchy Tree</h1>
