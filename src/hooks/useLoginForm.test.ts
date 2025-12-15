@@ -2,7 +2,6 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useLoginForm } from './useLoginForm';
 
-// Mock event helpers
 const mockSubmitEvent = {
   preventDefault: vi.fn(),
   persist: vi.fn(),
@@ -13,7 +12,6 @@ const mockChangeEvent = (id: string, value: string) => ({
   persist: vi.fn(),
 } as unknown as React.ChangeEvent<HTMLInputElement>);
 
-// Mock useAuth
 const mockLogin = vi.fn();
 vi.mock('./useAuth', () => ({
   __esModule: true,
@@ -68,7 +66,6 @@ describe('useLoginForm', () => {
   it('should set error state and not call login if email is empty', async () => {
     const { result } = renderHook(() => useLoginForm());
     
-    // Only set password
     act(() => {
       result.current.handleChange(mockChangeEvent('password', 'password123'));
     });
@@ -85,7 +82,6 @@ describe('useLoginForm', () => {
   it('should set error state and not call login if password is empty', async () => {
     const { result } = renderHook(() => useLoginForm());
     
-    // Only set email
     act(() => {
       result.current.handleChange(mockChangeEvent('email', 'test@example.com'));
     });
@@ -119,7 +115,6 @@ describe('useLoginForm', () => {
 
     const { result } = renderHook(() => useLoginForm());
 
-    // Fill in the form
     act(() => {
       result.current.handleChange(mockChangeEvent('email', 'wrong@example.com'));
       result.current.handleChange(mockChangeEvent('password', 'wrongpass'));
@@ -129,14 +124,11 @@ describe('useLoginForm', () => {
       await result.current.handleSubmit(mockSubmitEvent);
     });
 
-    // Should set error state
     expect(result.current.error).toBe('Invalid email or password');
     expect(result.current.isLoading).toBe(false);
     
-    // Should log the error
     expect(consoleErrorSpy).toHaveBeenCalledWith(error);
     
-    // Cleanup
     consoleErrorSpy.mockRestore();
   });
 });

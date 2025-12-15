@@ -14,8 +14,6 @@ export default function LoginPage() {
         }
     }, [user, navigate]);
 
-    console.log(user);
-
     return (
         <div className="container mt-8 sm:mx-auto sm:w-5xl px-10 py-5">
             <div className="border border-black flex flex-col justify-center py-12 sm:px-6 lg:px-12">

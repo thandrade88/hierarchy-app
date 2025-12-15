@@ -48,8 +48,10 @@ describe('HierarchyTree', () => {
     
     render(<HierarchyTree users={users} />);
     
-    expect(screen.getByText('John Doe john@example.com')).toBeInTheDocument();
-    expect(screen.getByText('Bob Johnson bob@example.com')).toBeInTheDocument();
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('john@example.com')).toBeInTheDocument();
+    expect(screen.getByText('Bob Johnson')).toBeInTheDocument();
+    expect(screen.getByText('bob@example.com')).toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'BJ' })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'JD' })).toBeInTheDocument();
   });

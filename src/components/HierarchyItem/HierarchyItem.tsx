@@ -47,7 +47,7 @@ export default function HierarchyItem(user: HierarchyItemProps) {
                     </span>
                     <Avatar photoUrl={user.photo} initials={user.initials} />
                     <h4 className="ml-5 text-md">
-                        {user.fullName} &nbsp; {user.email}
+                        <span>{user.fullName}</span>  <span className="ml-3">{user.email}</span>
                     </h4>
                 </div>
             </div>
