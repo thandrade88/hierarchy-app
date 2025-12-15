@@ -1,6 +1,6 @@
 import { POISON_ARRAY } from "./constants";
 
-function make32(inputString: string) {
+export function make32(inputString: string) {
     const targetLength = 32;
     let resultString = "";
     while (resultString.length < targetLength) { 

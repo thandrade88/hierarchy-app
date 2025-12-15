@@ -12,7 +12,7 @@ const Avatar: React.FC<AvatarProps> = ({ photoUrl, initials }) => {
                 ?
                 <img
                     src={photoUrl}
-                    alt="User Avatar"
+                    alt={initials}
                     className="h-full w-full object-cover"
                 />
                 :

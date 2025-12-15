@@ -5,7 +5,7 @@ export default function NotFoundPage() {
             <p style={{textAlign: "center"}}>
                 The page you are looking for does not exist.
                 <br />
-                Please check the URL or return to the <a href="/">home page</a>.
+                Please check the URL or return to the <a className="text-purple-600" href="/">home page</a>.
             </p>
         </div>
     )

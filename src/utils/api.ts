@@ -1,11 +1,46 @@
-import type { UserData } from '../types/user';
+import type { UserData, HierarchyUser } from '../types/user';
 
 const FIREBASE_ROOT = 'https://gongfetest.firebaseio.com';
+const secretsUrl = `${FIREBASE_ROOT}/secrets.json`;
+const allUsersUrl = `${FIREBASE_ROOT}/users.json`;
 
+/**
+ * Transforms raw user data into the format expected by the application
+ */
+function transformUserData(users: UserData[]): HierarchyUser[] {
+    if (!Array.isArray(users)) {
+        throw new Error('Expected an array of users');
+    }
+    return users.map(user => {        
+        if (typeof user.id !== 'number' || 
+            typeof user.firstName !== 'string' || 
+            typeof user.lastName !== 'string' || 
+            typeof user.email !== 'string') {
+            console.warn('Invalid user data:', user);
+            throw new Error('Invalid user data structure');
+        }
+        return {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            photo: user.photo,
+            managerId: user.managerId,            
+            fullName: `${user.firstName} ${user.lastName}`,
+            initials: `${user.firstName[0]}${user.lastName[0]}`.toUpperCase(),
+            isManager: !user.managerId
+        };
+    });
+}
+
+/**
+ * Fetches the user data for a given secret from the API.
+ *
+ * @param {string} secret - The secret used to identify the user.
+ * @return {Promise<UserData | null>} The user data if found, null otherwise.
+ */
 export async function getUserBySecret(secret: string): Promise<UserData | null> {
-    const secretsUrl = `${FIREBASE_ROOT}/secrets.json`;
-    const allUsersUrl = `${FIREBASE_ROOT}/users.json`;
-
+    
     try {
         const secretsData = await fetch(secretsUrl);
 
@@ -23,10 +58,17 @@ export async function getUserBySecret(secret: string): Promise<UserData | null> 
                 throw new Error('Network response was not ok');
             }
 
-            const usersDataArray = await usersData.json();
-            const user = usersDataArray.filter((user: UserData) => user.id === userId)[0];
 
-            return { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, managerId: user.managerId };
+            const usersDataArray = await usersData.json();
+            const user = usersDataArray.find((user: UserData) => user.id === userId);
+
+            return { 
+                id: user.id, 
+                firstName: user.firstName, 
+                lastName: user.lastName, 
+                email: user.email, 
+                managerId: user.managerId 
+            };
         }
 
         return null;
@@ -36,40 +78,27 @@ export async function getUserBySecret(secret: string): Promise<UserData | null> 
     }
 }
 
+
+/**
+ * Fetches all users from the API and sanitizes the data.
+ *
+ * @returns {Promise<UserData[]>} An array of UserData objects representing all users.
+ * @throws {Error} If the API call fails or if the data cannot be retrieved.
+ */
 export async function fetchAllUsers(): Promise<UserData[]> {
-    console.log('server', FIREBASE_ROOT);
-    const usersUrl = `${FIREBASE_ROOT}/users.json`;
     try {
-        const response = await fetch(usersUrl);
+        const response = await fetch(allUsersUrl);
 
         if (!response.ok) {
             throw new Error('Failed to fetch users data');
         }
 
-        const allUsersArray = await response.json();
+        const usersData = await response.json();
 
-        console.log('allUsersArray', allUsersArray);
-
-        const usersArraySanitised: UserData[] = allUsersArray.map((user: UserData) => {
-            // No need to copy every field if you can rely on the spread operator,
-            // but if you must, here is the corrected logic:
-            return {
-                // Corrected: Assign user.photo directly, which keeps it as string or undefined
-                photo: user.photo,
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                managerId: user.managerId,
-                // NOTE: You are missing the 'secret' and 'password' fields here, which is 
-                // a good thing for security if they are not needed on the front end!
-            };
-        });
-
-        return usersArraySanitised;
+        return transformUserData(usersData);
 
     } catch (error) {
         console.error('Error fetching all users:', error);
-        throw new Error('Could not retrieve user hierarchy data.');
+        throw new Error(`Could not retrieve user hierarchy data: ${error instanceof Error ? error.message : String(error)}`);
     }
 }

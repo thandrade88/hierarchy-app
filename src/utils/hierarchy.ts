@@ -1,18 +1,18 @@
-import type { UserData } from "../types/user";
+import type { HierarchyUser } from "../types/user";
 
-export default function buildHierarchyTree(users: UserData[]) {
-   const managers =  Object.values(users).filter(user => user.managerId === undefined);   
-   
-    const team = managers.map((manager: UserData) => {
-        return {
-            manager: {...manager},            
-            reports: Object.values(users).filter(user => user.managerId !== undefined && user.managerId === manager.id)
-        };
-    });
+/**
+ * Recursively builds a hierarchy tree of users based on their managerId.
+ *
+ * @param {HierarchyUser[]} users - The array of users to build the hierarchy tree from.
+ * @param {number} [managerId] - The optional managerId to filter the users by.
+ * @return {HierarchyUser[]} - The hierarchy tree of users.
+ */
 
-
-    console.log(team);       
-
-    
-    return team;
+export default function buildHierarchyTree(users: HierarchyUser[], managerId?: number): HierarchyUser[] {
+    return users
+        .filter(user => user.managerId === managerId)
+        .map(manager => ({
+            ...manager,            
+            reports: buildHierarchyTree(users, manager.id)
+        }));
 }
