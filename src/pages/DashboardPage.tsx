@@ -41,8 +41,7 @@ export default function DashboardPage() {
         };
     };
     
-    useEffect(() => {
-        let isMounted = true;
+    useEffect(() => {       
         let cleanup: (() => void) | undefined;
 
         if (user) {            
@@ -52,8 +51,7 @@ export default function DashboardPage() {
             load();
         }
 
-        return () => {
-            isMounted = false;
+        return () => {            
             if (cleanup) cleanup();
         };
     }, [user]);

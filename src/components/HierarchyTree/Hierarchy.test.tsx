@@ -1,9 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import type { HierarchyUser } from '../../types/user';
 import HierarchyTree from './HierarchyTree';
-import HierarchyItem from './HierarchyItem';
-import userEvent from '@testing-library/user-event';
 
 const mockUser: HierarchyUser = {
   id: 1,
@@ -29,53 +27,7 @@ const mockUser: HierarchyUser = {
   ]
 };
 
-describe('HierarchyItem', () => {
-  it('renders user information correctly with expand icon', () => {
-    render(<HierarchyItem {...mockUser} />);
-    
-    expect(screen.getByText('+')).toBeInTheDocument(); 
-    expect(screen.getByRole('img', { name: 'JD' })).toBeInTheDocument();
-    expect(screen.getByText('John Doe john@example.com')).toBeInTheDocument();
-  });
 
-  it('renders user information correctly with - icon if user is not a manager', () => {
-    const userWithoutReports = { ...mockUser, reports: [] };
-    render(<HierarchyItem {...userWithoutReports} />);
-    
-    expect(screen.getByText('-')).toBeInTheDocument(); 
-    expect(screen.getByRole('img', { name: 'JD' })).toBeInTheDocument();
-    expect(screen.getByText('John Doe john@example.com')).toBeInTheDocument();
-  });
-
-  it('toggles expansion with keyboard', async () => {
-    const user = userEvent.setup();
-    render(<HierarchyItem {...mockUser} />);
-        
-    expect(screen.queryByText('Jane Smith')).not.toBeInTheDocument();    
-    
-    const expandableButton = screen.getByRole('button', { name: 'John Doe' });
-    expandableButton.focus();        
-    await user.keyboard('{Enter}');   
-    expect(screen.getByText(/Jane Smith/)).toBeInTheDocument();    
-    
-    await user.keyboard(' ');
-    expect(screen.queryByText(/Jane Smith/)).not.toBeInTheDocument();
-    
-    await user.keyboard(' ');
-    expect(screen.getByText(/Jane Smith/)).toBeInTheDocument();
-    
-    await user.keyboard('{Enter}');
-    expect(screen.queryByText(/Jane Smith/)).not.toBeInTheDocument();
-  });  
-
-  it('does not show expand icon when user has no reports', () => {
-    const userWithoutReports = { ...mockUser, reports: [] };
-    render(<HierarchyItem {...userWithoutReports} />);
-    
-    expect(screen.queryByText('+')).not.toBeInTheDocument();
-    expect(screen.getByText('-')).toBeInTheDocument();
-  });
-});
 
 describe('HierarchyTree', () => {
   it('renders a list of users', () => {

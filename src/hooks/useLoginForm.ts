@@ -34,6 +34,7 @@ export function useLoginForm() {
       await login(formData.email, formData.password);
     } catch (err) {
       setError('Invalid email or password');
+      console.error(err);
     } finally {
       setIsLoading(false);
     }

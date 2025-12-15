@@ -1,10 +1,15 @@
 import { useMemo, useState, type KeyboardEvent } from "react";
 import type { HierarchyUser } from "../../types/user";
-import Avatar from "./../Avatar/Avatar";
+import Avatar from "../Avatar/Avatar";
 
-export default function HierarchyItem(user: HierarchyUser) {
+interface HierarchyItemProps extends Omit<HierarchyUser, 'reports'> {
+  reports?: HierarchyUser[];
+}
+
+export default function HierarchyItem(user: HierarchyItemProps) {
     const [isExpanded, setIsExpanded] = useState(false);
     const hasReports = (user.reports?.length ?? 0) > 0;
+    
     const toggleExpanded = () => setIsExpanded(!isExpanded);
 
     const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -14,28 +19,36 @@ export default function HierarchyItem(user: HierarchyUser) {
         }
     };
 
-    const reports = user.reports || [];
+    const reports = useMemo(() => user.reports || [], [user.reports]);
 
     return (
-        <div className="ml-5 mb-5" role="treeitem" aria-expanded={hasReports ? isExpanded : undefined}>
+        <div 
+            className="ml-5 mb-5"             
+            aria-expanded={hasReports ? isExpanded : undefined}
+        >
             <div
-                role="button"
+                role="treeitem" 
                 aria-label={user.fullName}
                 aria-expanded={isExpanded} 
                 aria-controls={`${user.id}-reports`}
                 tabIndex={0}
                 onKeyDown={handleKeyDown}
                 onClick={toggleExpanded} 
-                className={`outline-none rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${hasReports ? 'cursor-pointer' : 'cursor-default'}`}
+                className={`outline-none rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
+                    hasReports ? 'cursor-pointer' : 'cursor-default'
+                }`}
             >
                 <div className="flex items-center justify-start align-middle">
-                    <button  
-                        tabIndex={-1}                       
-                        className="mr-5 text-4xl select-none text-center w-5">
+                    <span 
+                        className="mr-5 text-4xl select-none text-center w-5"
+                        aria-hidden="true"
+                    >
                         {hasReports ? '+' : '-'}
-                    </button>
+                    </span>
                     <Avatar photoUrl={user.photo} initials={user.initials} />
-                    <h4 className="ml-5 text-md">{user.fullName} &nbsp; {user.email}</h4>
+                    <h4 className="ml-5 text-md">
+                        {user.fullName} &nbsp; {user.email}
+                    </h4>
                 </div>
             </div>
             {isExpanded && hasReports && (
@@ -48,8 +61,8 @@ export default function HierarchyItem(user: HierarchyUser) {
                     <li id={`${user.id}-label`} className="sr-only">
                         {user.fullName}'s reports
                     </li>
-                    {reports.map((report: HierarchyUser) => (
-                        <li key={report.id} role="none">
+                    {reports.map((report) => (
+                        <li key={report.id} role="treeitem">
                             <HierarchyItem {...report} />
                         </li>
                     ))}

@@ -1,5 +1,5 @@
 import type { HierarchyUser } from "../../types/user";
-import HierarchyItem from "./HierarchyItem";
+import HierarchyItem from "../HierarchyItem/HierarchyItem";
 
 export default function HierarchyTree({ users }: { users: HierarchyUser[] }) {
     
