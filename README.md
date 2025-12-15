@@ -1,77 +1,136 @@
-# React + TypeScript + Vite
+# 🏢 Hierarchy App
+The Hierarchy App is a take home challenge for a software engineer position at Gong.io.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Author: Thales Andrade
+Email: thandrade88@gmail.com
 
-Currently, two official plugins are available:
+## Project Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The Hierarchy App is a single-page application designed to visualize an organizational structure (hierarchy tree) by consuming test data from a Firebase backend. It features custom user authentication, session management using local storage, and protected routing.
 
-## React Compiler
+This project was built with a focus on modern React practices, robust testing (Vitest/RTL), and clear separation of concerns using custom hooks and context providers.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Key Features
 
-## Expanding the ESLint configuration
+  * **Custom Authentication:** Secure login using a custom `encode` utility that combines email and password via XOR encryption against a predefined "Poison Array."
+  * **Organizational Hierarchy:** Displays complex user relationships (managers and reports) in an interactive, accessible tree structure (`role="tree"`).
+  * **Protected Routing:** Utilizes a custom `ProtectedRoute` component and the `useAuth` hook to restrict access to the `/dashboard`.
+  * **API Utility:** Includes dedicated modules for fetching and transforming raw user data into the expected hierarchy format.
+  * **Session Persistence:** Maintains user session state using `localStorage`.
+  * **State Management:** Centralized authentication state managed via the `AuthContext` and `AuthProvider`.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 💻 Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Frontend** | **React** (TSX) | Core UI Library |
+| **State/Hooks** | **React Context**, Custom Hooks (`useAuth`, `useLoginForm`) | Global state management and logic abstraction |
+| **Routing** | **React Router DOM** | Client-side routing |
+| **Styling** | **Tailwind CSS** (Inferred) | Utility-first CSS framework |
+| **Testing** | **Vitest** and **React Testing Library (RTL)** | Unit and integration testing |
+| **Data Source** | **Firebase** (Read-Only Test Data) | External API for user and secret data |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Follow these steps to set up and run the project locally.
+
+### Prerequisites
+
+  * Node.js (LTS recommended)
+  * npm or yarn
+
+### Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/thandrade88/hierarchy-app.git
+    cd hierarchy-app
+    ```
+
+2.  **Install dependencies:**
+
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+3.  **Run the development server:**
+
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+
+    The application will be accessible at `http://localhost:5173` (or the port specified by your environment).
+
+## 🔑 Usage & Test Credentials
+
+### Data Source
+
+The application fetches user data and authentication secrets from the following public read-only endpoints:
+
+  * `https://gongfetest.firebaseio.com/secrets.json`
+  * `https://gongfetest.firebaseio.com/users.json`
+
+### Login
+
+Since the application uses live test data, you must use credentials that are valid in the provided Firebase data structure.
+
+| Email | Password | Role |
+| :--- | :--- | :--- |
+| `rick@gongfe.com` | `123456` | Example Manager |
+| `morty@gongfe.com` | `123456` | Example Report |
+
+Upon successful login, the application calculates and displays the organizational hierarchy tree.
+
+## 🧪 Testing
+
+The project includes comprehensive unit and integration tests using Vitest and React Testing Library to ensure the reliability of hooks, context, routing, and API utilities.
+
+### Test Commands
+
+Run all tests:
+
+```bash
+npm run test
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Run tests in watch mode:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run test:watch
 ```
-# hierarchy-app
 
+### Key Test Coverage
 
+| Module | Focus |
+| :--- | :--- |
+| **`AuthProvider.test.tsx`** | Initialization, `login` success/failure, `logout`, and `localStorage` persistence. |
+| **`useAuth.test.tsx`** | Ensures correct context exposure and throws an error if used outside the `AuthProvider`. |
+| **`useLoginForm.test.ts`** | Handles form state changes, validation, and delegates to the `login` function correctly. |
+| **`api.test.ts`** | Mocks `fetch` to verify `getUserBySecret` and `fetchAllUsers` handle success, non-existent users, and network errors. |
+| **`auth.test.ts`** | Unit tests the core `make32` padding/truncation and `encode` (XOR) encryption logic. |
+| **`App.test.tsx`** | Integration test for the `ProtectedRoute` and overall routing logic based on the mock authentication state. |
+
+## 📂 Project Structure
+
+```
+hierarchy-app/
+├── public/
+├── src/
+│   ├── components/       # Reusable UI components (e.g., HierarchyItem, Avatar)
+│   ├── context/          # Context definition (AuthContext, AuthProvider)
+│   ├── hooks/            # Custom React hooks (useAuth, useLoginForm)
+│   ├── pages/            # Main application pages (LoginPage, DashboardPage)
+│   ├── types/            # TypeScript interface definitions (UserData, HierarchyUser)
+│   ├── utils/            # Non-React utilities (api.ts, auth.ts, hierarchy.ts)
+│   ├── __tests__/        # All test files (fully mocked environment)
+│   ├── App.tsx           # Main routing component
+│   └── main.tsx          # Application entry point
+├── package.json
+└── vite.config.ts
+```
 
