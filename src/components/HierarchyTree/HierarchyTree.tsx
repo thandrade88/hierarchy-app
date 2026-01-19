@@ -1,7 +1,7 @@
 import type { HierarchyUser } from "../../types/user";
 import HierarchyItem from "../HierarchyItem/HierarchyItem";
 
-export default function HierarchyTree({ users, deleteUser }: { users: HierarchyUser[], deleteUser: (userId: number) => void }) {
+export default function HierarchyTree({ users, deleteUser }: { users: HierarchyUser[], deleteUser: (userId: number, managerId?: number | undefined) => void }) {
     
     return (
         <div className="mt-10">
