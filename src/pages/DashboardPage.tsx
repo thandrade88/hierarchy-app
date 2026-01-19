@@ -40,6 +40,18 @@ export default function DashboardPage() {
             isRequestActive = false;
         };
     };
+
+    const deleteUser = (userId: number, managerId: number | undefined) => {
+        const remainingUsers = users.filter(user => user.id !== userId);
+
+        remainingUsers.forEach(user => {
+            if (user.managerId === userId) {
+                user.managerId = managerId;
+            }
+        });
+        
+        setUsers([...remainingUsers]);
+    };
     
     useEffect(() => {       
         let cleanup: (() => void) | undefined;
@@ -97,7 +109,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="mt-10">
                         <h1 className="text-4xl font-light">Hierarchy Tree</h1>
-                        <HierarchyTree users={hierarchyTree} />
+                        <HierarchyTree users={hierarchyTree} deleteUser={deleteUser} />
                     </div>
                 </>
             )}

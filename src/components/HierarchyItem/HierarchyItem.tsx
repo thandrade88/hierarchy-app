@@ -4,9 +4,10 @@ import Avatar from "../Avatar/Avatar";
 
 interface HierarchyItemProps extends Omit<HierarchyUser, 'reports'> {
   reports?: HierarchyUser[];
+  deleteHandler: (userId: number, userManagerId?: number | undefined) => void;
 }
 
-export default function HierarchyItem(user: HierarchyItemProps) {
+export default function HierarchyItem({ deleteHandler, ...user }: HierarchyItemProps) {
     const [isExpanded, setIsExpanded] = useState(false);
     const hasReports = (user.reports?.length ?? 0) > 0;
     
@@ -34,7 +35,7 @@ export default function HierarchyItem(user: HierarchyItemProps) {
                 tabIndex={0}
                 onKeyDown={handleKeyDown}
                 onClick={toggleExpanded} 
-                className={`outline-none rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
+                className={`flex outline-none rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
                     hasReports ? 'cursor-pointer' : 'cursor-default'
                 }`}
             >
@@ -49,7 +50,18 @@ export default function HierarchyItem(user: HierarchyItemProps) {
                     <h4 className="ml-5 text-md">
                         <span>{user.fullName}</span>  <span className="ml-3">{user.email}</span>
                     </h4>
+            
+                   
                 </div>
+                <button 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        deleteHandler(user.id, user.managerId || undefined);
+                    }} 
+                    className="ml-5 text-red-500 hover:text-red-700"
+                >
+                    Delete
+                </button>
             </div>
             {isExpanded && hasReports && (
                 <ul 
@@ -63,7 +75,7 @@ export default function HierarchyItem(user: HierarchyItemProps) {
                     </li>
                     {reports.map((report) => (
                         <li key={report.id} role="treeitem">
-                            <HierarchyItem {...report} />
+                            <HierarchyItem {...report} deleteHandler={deleteHandler} />
                         </li>
                     ))}
                 </ul>
